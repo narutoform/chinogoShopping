@@ -1,0 +1,15 @@
+package cn.chinogo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+@SpringBootApplication
+public class ChinogoWebUploadApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ChinogoWebUploadApplication.class, args);
+	}
+}

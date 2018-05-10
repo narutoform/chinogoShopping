@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinogo.mapper.TbItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.chinogo.pojo.TbItem">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="sell_point" property="sellPoint"/>
+        <result column="price" property="price"/>
+        <result column="num" property="num"/>
+        <result column="barcode" property="barcode"/>
+        <result column="image" property="image"/>
+        <result column="cid" property="cid"/>
+        <result column="status" property="status"/>
+        <result column="weight" property="weight"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+        <result column="colour" property="colour"/>
+        <result column="size" property="size"/>
+    </resultMap>
+
+    <select id="getItemListWithCategory" resultType="cn.chinogo.pojo.TbItemWithCategory">
+		SELECT
+			c.`name` categoryName,
+			i.barcode,
+			i.cid,
+			i.colour,
+			i.created,
+			i.id,
+			i.image,
+			i.num,
+			i.price,
+			i.sell_point,
+			i.size,
+			i.`status`,
+			i.title,
+			i.updated,
+			i.weight
+		FROM
+			tb_category c,
+			tb_item i
+		WHERE
+			i.cid = c.id
+		ORDER BY
+		i.updated DESC
+	</select>
+
+	<select id="getItemListWithCategoryLikeTitle" resultType="cn.chinogo.pojo.TbItemWithCategory">
+		SELECT
+			c.`name` categoryName,
+			i.barcode,
+			i.cid,
+			i.colour,
+			i.created,
+			i.id,
+			i.image,
+			i.num,
+			i.price,
+			i.sell_point,
+			i.size,
+			i.`status`,
+			i.title,
+			i.updated,
+			i.weight
+		FROM
+			tb_category c,
+			tb_item i
+		WHERE
+			i.cid = c.id
+		AND i.title LIKE CONCAT('%', #{title}, '%')
+		ORDER BY
+		i.updated DESC
+	</select>
+
+	<select id="getItemListWithDescAndCid" resultType="cn.chinogo.pojo.SearchItem">
+		SELECT
+			i.id,
+			i.title,
+			i.sell_point,
+			i.price,
+			i.image,
+			i.colour,
+			i.size,
+			i.weight,
+			c.`name` categoryName,
+			d.item_desc
+		FROM
+			tb_item i
+		LEFT JOIN tb_category c ON i.cid = c.id
+		LEFT JOIN tb_item_desc d ON i.id = d.item_id
+	</select>
+
+</mapper>

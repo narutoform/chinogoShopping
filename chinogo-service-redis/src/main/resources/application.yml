@@ -1,0 +1,33 @@
+#DUBBOX
+dubbox:
+  application: 
+    name: chinogo-service-redis
+    organization: dubbox
+    owner: chinogo
+  registry: 
+    protocol: zookeeper
+    address: www.chinotan.cn:2181
+  annotation:
+    package: cn.chinogo.redis
+  protocol:
+    name: dubbo
+    port: 20881
+    host: 127.0.0.1
+    timeout: 30000
+    threadpool: fixed
+    threads: 500
+    accepts: 1000
+    serialization: kryo
+    optimizer: cn.chinogo.serial.SerializationOptimizerImpl
+  monitor:
+    enabled: false
+    address: 127.0.0.1:6060
+    username: admin
+    password: admin
+
+# REDIS (RedisProperties)
+redis:
+  cluster: false
+  single-host: www.chinotan.cn
+  single-port: 6379
+  password: xingchengxyxaszcl5150126kid

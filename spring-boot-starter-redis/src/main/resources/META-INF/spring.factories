@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.chinogo.redis.RedisAutoConfiguration,\
+cn.chinogo.redis.RedisClusterAutoConfiguration

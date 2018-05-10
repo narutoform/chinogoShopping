@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.chinogo.mapper.TbOrderItemMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="cn.chinogo.pojo.TbOrderItem">
+		<id column="id" property="id" />
+		<result column="item_id" property="itemId" />
+		<result column="order_id" property="orderId" />
+		<result column="num" property="num" />
+		<result column="title" property="title" />
+		<result column="price" property="price" />
+		<result column="total_fee" property="totalFee" />
+		<result column="pic_path" property="picPath" />
+		<result column="weights" property="weights" />
+	</resultMap>
+
+</mapper>

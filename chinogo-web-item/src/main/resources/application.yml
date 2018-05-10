@@ -1,0 +1,23 @@
+#DUBBO
+dubbox:
+  application:
+    name: chinogo-web-item
+    organization: dubbox
+    owner: chinogo
+  registry:
+    protocol: zookeeper
+    address: www.chinotan.cn:2181
+  annotation:
+    package: cn.chinogo.item.controller
+  monitor:
+    enabled: false
+    address: 192.168.125.1:6060
+    username: admin
+    password: admin
+
+server:
+  port: 8103
+
+# swagger2
+swagger2.package: cn.chinogo.item.controller
+

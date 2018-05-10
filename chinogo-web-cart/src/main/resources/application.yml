@@ -1,0 +1,29 @@
+#DUBBO
+dubbox:
+  application:
+    name: chinogo-web-cart
+    organization: dubbox
+    owner: chinogo
+  registry:
+    protocol: zookeeper
+    address: www.chinotan.cn:2181
+  annotation:
+    package: cn.chinogo.cart.controller
+  monitor:
+    enabled: false
+    address: 192.168.125.1:6060
+    username: admin
+    password: admin
+
+server:
+  port: 8107
+
+
+# swagger2
+swagger2.package: cn.chinogo.cart.controller
+
+# Redis
+redisKey:
+  prefix:
+    # 用户登录信息前缀
+    user_session: 'USER_SESSION:'

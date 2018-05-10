@@ -1,0 +1,37 @@
+#DUBBO
+dubbox:
+  application:
+    name: chinogo-web-sso
+    organization: dubbox
+    owner: chinogo
+  registry:
+    protocol: zookeeper
+    address: www.chinotan.cn:2181
+  annotation:
+    package: cn.chinogo.sso.controller
+  monitor:
+    enabled: false
+    address: 192.168.125.1:6060
+    username: admin
+    password: admin
+
+server:
+  port: 8104
+
+# swagger2
+swagger2.package: cn.chinogo.sso.controller
+
+# Redis
+redisKey:
+  # 缓存时间
+  expire_time: 120
+  prefix:
+    # 验证码Redis前缀
+    verifycode: 'VERIFYCODE:'
+
+# 密码错误
+password_error: '{"status": -1, "err":"密码错误"}'
+# 用户名不存在
+user_not_exist: '{"status": -1, "err":"用户名不存在"}'
+# 成功响应首页
+portal_path: '{"status": 1}'
