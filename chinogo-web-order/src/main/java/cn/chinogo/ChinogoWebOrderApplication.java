@@ -14,6 +14,6 @@ public class ChinogoWebOrderApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChinogoWebOrderApplication.class, args);
-		Main.main(args);
+		Main.main(new String[0]);
 	}
 }

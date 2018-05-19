@@ -16,7 +16,7 @@ import java.util.Date;
  * </p>
  *
  * @author chinotan
- * @since 2017-10-13
+ * 
  */
 @TableName("tb_item_desc")
 @Data

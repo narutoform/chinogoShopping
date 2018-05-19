@@ -151,4 +151,18 @@ public interface ItemService {
      */
     Integer updateItemStatus(TbItem item);
 
+    /**
+     * 插入到es
+     * @param id
+     * @return
+     */
+    void insertIntoES(Long id);
+
+    /**
+     * 更新到es
+     * @param id
+     * @return
+     */
+    void updateIntoES(Long id);
+
 }

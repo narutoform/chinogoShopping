@@ -6,6 +6,7 @@ import cn.chinogo.item.service.ItemService;
 import cn.chinogo.mapper.*;
 import cn.chinogo.pojo.*;
 import cn.chinogo.redis.service.JedisClient;
+import cn.chinogo.search.service.SearchService;
 import cn.chinogo.utils.FastJsonConvert;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
@@ -27,7 +28,7 @@ import java.util.List;
  * 
  * @author chinotan
  */
-@Service(version = Const.CHINOGO_ITEM_VERSION)
+@Service(version = Const.CHINOGO_ITEM_VERSION, timeout = 1000000)
 @Transactional(rollbackFor = Exception.class)
 public class ItemServiceImpl implements ItemService {
 
@@ -48,8 +49,11 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private TbCategoryMapper categoryMapper;
 
-    @Reference(version = Const.CHINOGO_REDIS_VERSION)
+    @Reference(version = Const.CHINOGO_REDIS_VERSION, timeout = 3000000)
     private JedisClient jedisClient;
+    
+    @Reference(version = Const.CHINOGO_SEARCH_VERSION, timeout = 3000000)
+    private SearchService searchService;
 
     @Value("${redisKey.prefix.item_info_profix}")
     private String ITEM_INFO_PROFIX;
@@ -222,7 +226,7 @@ public class ItemServiceImpl implements ItemService {
         itemParamItem.setItemId(item.getId());
 
         insert3 = itemParamItemMapper.insert(itemParamItem);
-
+        
         return insert1 == 1 && insert2 == 1 && insert3 == 1 ? item.getId() : 0;
     }
 
@@ -238,8 +242,9 @@ public class ItemServiceImpl implements ItemService {
 
             // 更新成功后清除缓存
             String itemKey = ITEM_INFO_PROFIX + item.getId() + ITEM_INFO_BASE_SUFFIX;
-            jedisClient.del(itemKey);
-            
+            if (StringUtils.isNotBlank(jedisClient.get(itemKey))) {
+                jedisClient.del(itemKey);
+            }
         }
 
         // 更新itemDesc
@@ -250,7 +255,9 @@ public class ItemServiceImpl implements ItemService {
             itemDescMapper.updateById(itemDesc);
 
             String descKey = ITEM_INFO_PROFIX + item.getId() + ITEM_INFO_DESC_SUFFIX;
-            jedisClient.del(descKey);
+            if (StringUtils.isNotBlank(jedisClient.get(descKey))) {
+                jedisClient.del(descKey);
+            }
         }
 
         // 更新itemParamItem
@@ -263,7 +270,9 @@ public class ItemServiceImpl implements ItemService {
             itemParamItemMapper.update(itemParamItem, wrapper);
 
             String paramKey = ITEM_INFO_PROFIX + item.getId() + ITEM_INFO_PARAM_SUFFIX;
-            jedisClient.del(paramKey);
+            if (StringUtils.isNotBlank(jedisClient.get(paramKey))) {
+                jedisClient.del(paramKey);
+            }
         }
         
         return item.getId();
@@ -315,8 +324,19 @@ public class ItemServiceImpl implements ItemService {
 
         Wrapper<TbItemParamItem> wrapper = new EntityWrapper<>();
         wrapper.in("item_id", ids);
-        itemParamItemMapper.delete(wrapper);
+        Integer delete = itemParamItemMapper.delete(wrapper);
 
+        // 将es中数据删除
+        if (delete > 0) {
+            ids.parallelStream().forEach(r -> {
+                try {
+                    searchService.deleteItem(String.valueOf(r));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        
         return 1;
     }
 
@@ -335,5 +355,34 @@ public class ItemServiceImpl implements ItemService {
         jedisClient.del(itemKey);
             
         return integer;
+    }
+
+    @Override
+    public void insertIntoES(Long id) {
+        // 插入到es中
+        try {
+            searchService.addItem(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateIntoES(Long id) {
+        SearchItem item = itemMapper.getItemListWithDescAndCidById(id);
+        // 将更新存到es
+        SearchItem searchItem = new SearchItem();
+        searchItem.setCategoryName(item.getCategoryName());
+        searchItem.setImage(item.getImage());
+        searchItem.setItemDesc(item.getItemDesc());
+        searchItem.setTitle(item.getTitle());
+        searchItem.setSellPoint(item.getSellPoint());
+        searchItem.setPrice(item.getPrice());
+        searchItem.setId(String.valueOf(id));
+        try {
+            searchService.updateItem(searchItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

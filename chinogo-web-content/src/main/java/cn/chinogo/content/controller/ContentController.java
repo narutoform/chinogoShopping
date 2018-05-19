@@ -28,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/content")
 public class ContentController {
 
-    @Reference(version = Const.CHINOGO_CONTENT_VERSION)
+    @Reference(version = Const.CHINOGO_CONTENT_VERSION, timeout = 1000000)
     private ContentService contentService;
 
     @Value("${big_ad_index}")
@@ -51,7 +51,6 @@ public class ContentController {
                 list.add(eleTree);
             }
         }
-
         return list;
     }
 
@@ -146,5 +145,13 @@ public class ContentController {
             map.put("status", "success");
         }
         return map;
+    }
+
+    @ApiOperation(value = "前端显示内容 bigAD: 89 smallAD: 90 text: 91 copyright: 98")
+    @GetMapping("/show/{categoryId}")
+    public Object showContent(@PathVariable("categoryId") Long categoryId) {
+        List<TbContent> tbContents = contentService.showContent(categoryId);
+        
+        return tbContents;
     }
 }

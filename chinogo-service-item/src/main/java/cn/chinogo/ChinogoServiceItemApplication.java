@@ -18,6 +18,6 @@ public class ChinogoServiceItemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ChinogoServiceItemApplication.class, args);
-        Main.main(args);
+        Main.main(new String[0]);
     }
 }

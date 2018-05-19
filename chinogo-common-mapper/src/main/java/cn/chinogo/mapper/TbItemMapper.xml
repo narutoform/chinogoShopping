@@ -91,4 +91,23 @@
 		LEFT JOIN tb_item_desc d ON i.id = d.item_id
 	</select>
 
+	<select id="getItemListWithDescAndCidById" resultType="cn.chinogo.pojo.SearchItem">
+		SELECT
+		i.id,
+		i.title,
+		i.sell_point,
+		i.price,
+		i.image,
+		i.colour,
+		i.size,
+		i.weight,
+		c.`name` categoryName,
+		d.item_desc
+		FROM
+		tb_item i
+		LEFT JOIN tb_category c ON i.cid = c.id
+		LEFT JOIN tb_item_desc d ON i.id = d.item_id
+		WHERE i.id = #{id}
+	</select>
+
 </mapper>

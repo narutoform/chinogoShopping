@@ -30,7 +30,7 @@ public class PageController {
 
     private static final Logger logger = LoggerFactory.getLogger(PageController.class);
 
-    @Reference(version = Const.CHINOGO_ORDER_VERSION, timeout = 100000, retries = 0)
+    @Reference(version = Const.CHINOGO_ORDER_VERSION, timeout = 1000000, retries = 0)
     private OrderService orderService;
     
     @Value("${aliPay.returnUrlSuccess}")

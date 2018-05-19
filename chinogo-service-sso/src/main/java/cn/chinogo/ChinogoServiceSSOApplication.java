@@ -13,6 +13,6 @@ public class ChinogoServiceSSOApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChinogoServiceSSOApplication.class, args);
-		Main.main(args);
+		Main.main(new String[0]);
 	}
 }

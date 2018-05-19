@@ -5,6 +5,7 @@ import cn.chinogo.pojo.TbItem;
 import cn.chinogo.pojo.TbItemWithCategory;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * </p>
  *
  * @author chinotan
- * @since 2017-10-13
+ * 
  */
 public interface TbItemMapper extends BaseMapper<TbItem> {
 
@@ -41,5 +42,12 @@ public interface TbItemMapper extends BaseMapper<TbItem> {
      * @return
      */
     List<SearchItem> getItemListWithDescAndCid();
+
+    /**
+     * 得到item带着分类和描述(通过id)
+     *
+     * @return
+     */
+    SearchItem getItemListWithDescAndCidById(@Param("id") Long id);
 
 }

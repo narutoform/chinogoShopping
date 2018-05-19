@@ -1,9 +1,7 @@
 package cn.chinogo.search.service;
 
 
-import cn.chinogo.pojo.ChinogoResult;
-import cn.chinogo.pojo.SearchItem;
-import cn.chinogo.pojo.SearchResult;
+import cn.chinogo.pojo.*;
 
 import java.io.IOException;
 
@@ -52,4 +50,11 @@ public interface SearchService {
      * @throws Exception
      */
     ChinogoResult deleteItem(String id) throws Exception;
+
+    /**
+     * 增量更新商品
+     * @return
+     * @throws Exception
+     */
+    ChinogoResult addItem(Long id) throws Exception;
 }

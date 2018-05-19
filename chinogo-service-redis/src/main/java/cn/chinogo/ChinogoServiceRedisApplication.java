@@ -12,6 +12,6 @@ public class ChinogoServiceRedisApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ChinogoServiceRedisApplication.class, args);
 
-		Main.main(args);
+		Main.main(new String[0]);
 	}
 }

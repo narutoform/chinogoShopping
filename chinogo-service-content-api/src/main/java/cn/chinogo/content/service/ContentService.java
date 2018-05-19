@@ -80,4 +80,10 @@ public interface ContentService {
      * @return
      */
     Integer updateContent(TbContent content);
+
+    /**
+     * 前端显示内容
+     * @return
+     */
+    List<TbContent> showContent(Long categoryId);
 }

@@ -33,10 +33,10 @@ public class CartController {
 
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
 
-    @Reference(version = Const.CHINOGO_CART_VERSION, retries = 0, timeout = 100000)
+    @Reference(version = Const.CHINOGO_CART_VERSION, retries = 0, timeout = 1000000)
     private CartService cartService;
 
-    @Reference(version = Const.CHINOGO_REDIS_VERSION, retries = 0, timeout = 100000)
+    @Reference(version = Const.CHINOGO_REDIS_VERSION, retries = 0, timeout = 1000000)
     private JedisClient jedisClient;
 
     @Value("${redisKey.prefix.user_session}")

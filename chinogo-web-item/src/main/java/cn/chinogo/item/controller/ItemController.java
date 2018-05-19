@@ -27,7 +27,7 @@ public class ItemController {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
 
-    @Reference(version = Const.CHINOGO_ITEM_VERSION)
+    @Reference(version = Const.CHINOGO_ITEM_VERSION, timeout = 1000000)
     private ItemService itemService;
 
     @ApiOperation(value = "根据商品id得到商品基本信息")
@@ -127,6 +127,8 @@ public class ItemController {
         if (i == 0) {
             map.put("status", "failed");
         } else {
+            // 插入到es中
+            itemService.insertIntoES(i);
             map.put("status", "success");
         }
         return map;
@@ -140,6 +142,8 @@ public class ItemController {
         if (i == null || i == 0) {
             map.put("status", "failed");
         } else {
+            // 更新到es
+            itemService.updateIntoES(i);
             map.put("status", "success");
         }
         return map;

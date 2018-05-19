@@ -13,7 +13,7 @@ import java.util.List;
  * </p>
  *
  * @author chinotan
- * @since 2017-10-13
+ * 
  */
 public interface TbContentMapper extends BaseMapper<TbContent> {
 

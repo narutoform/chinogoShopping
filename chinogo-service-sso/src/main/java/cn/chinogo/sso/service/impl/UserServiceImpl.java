@@ -1,8 +1,10 @@
 package cn.chinogo.sso.service.impl;
 
 import cn.chinogo.constant.Const;
+import cn.chinogo.mapper.TbAdminUserMapper;
 import cn.chinogo.mapper.TbUserMapper;
 import cn.chinogo.pojo.ChinogoResult;
+import cn.chinogo.pojo.TbAdminUser;
 import cn.chinogo.pojo.TbUser;
 import cn.chinogo.redis.service.JedisClient;
 import cn.chinogo.sso.service.UserService;
@@ -11,7 +13,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +30,7 @@ import java.util.*;
  *
  * @author chinotan
  */
-@Service(version = Const.CHINOGO_SSO_VERSION)
+@Service(version = Const.CHINOGO_SSO_VERSION, timeout = 1000000)
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
@@ -37,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TbUserMapper userMapper;
+
+    @Autowired
+    private TbAdminUserMapper userAdminMapper;
 
     @Reference(version = Const.CHINOGO_REDIS_VERSION)
     private JedisClient jedisClient;
@@ -200,6 +207,37 @@ public class UserServiceImpl implements UserService {
         return ChinogoResult.ok(token);
     }
 
+    @Override
+    public ChinogoResult managerLogin(TbAdminUser user) {
+        if (user == null) {
+            return ChinogoResult.build(400, "error", "数据为空");
+        }
+
+        Wrapper<TbAdminUser> wrapper = new EntityWrapper<>();
+
+        wrapper.eq("username", user.getUsername());
+
+        List<TbAdminUser> list = userAdminMapper.selectList(wrapper);
+
+        if (list == null || list.size() == 0) {
+            return ChinogoResult.build(400, "用户名不存在");
+        }
+
+        TbAdminUser check = list.get(0);
+
+        if (!check.getPassword().equals(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()))) {
+            return ChinogoResult.build(401, "用户名或密码错误");
+        }
+
+        TbAdminUser result = new TbAdminUser();
+
+        result.setUsername(check.getUsername());
+        result.setAvatar(check.getAvatar());
+        result.setId(check.getId());
+
+        return ChinogoResult.ok(result);
+    }
+
     /**
      * 请求格式 GET
      * 根据token值获取用户信息
@@ -208,7 +246,7 @@ public class UserServiceImpl implements UserService {
      * @return {
      * status: 200 //200 成功 400 没有此token 500 系统异常
      * msg: "OK" //错误 没有此token.
-     * data: {"username":"xbin","id":"id"} //返回用户名
+     * data: {"username":"chinogo","id":"id"} //返回用户名
      * }
      */
     @Override
@@ -483,5 +521,21 @@ public class UserServiceImpl implements UserService {
         }
         //注册失败
         return ChinogoResult.build(500, "注册失败");
+    }
+
+    @Override
+    public List<TbUser> userList(Page<TbUser> page) {
+        Wrapper<TbUser> wrapper = new EntityWrapper<>();
+        wrapper.orderBy("created", false);
+        RowBounds rowBounds = new RowBounds((page.getCurrent() - 1) * page.getSize(), page.getSize());
+        List<TbUser> list = userMapper.selectPage(rowBounds, wrapper);
+        return list;
+    }
+
+    @Override
+    public Integer userCount() {
+        Wrapper<TbUser> wrapper = new EntityWrapper<>();
+        Integer integer = userMapper.selectCount(wrapper);
+        return integer;
     }
 }

@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/search")
 public class SearchController {
 
-    @Reference(version = Const.CHINOGO_SEARCH_VERSION)
+    @Reference(version = Const.CHINOGO_SEARCH_VERSION, timeout = 1000000)
     private SearchService searchService;
 
     @Value("${search_result_rows}")

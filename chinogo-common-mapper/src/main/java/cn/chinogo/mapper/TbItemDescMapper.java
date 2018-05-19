@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author chinotan
- * @since 2017-10-13
+ * 
  */
 public interface TbItemDescMapper extends BaseMapper<TbItemDesc> {
 

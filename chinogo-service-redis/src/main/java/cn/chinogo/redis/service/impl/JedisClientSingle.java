@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-@Service(version = Const.CHINOGO_REDIS_VERSION)
+@Service(version = Const.CHINOGO_REDIS_VERSION, timeout = 1000000)
 public class JedisClientSingle implements JedisClient {
 
     @Autowired

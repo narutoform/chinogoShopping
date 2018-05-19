@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author chinotan
  */
-@Service(version = Const.CHINOGO_ORDER_VERSION, timeout = 100000, retries = 0)
+@Service(version = Const.CHINOGO_ORDER_VERSION, timeout = 1000000, retries = 0)
 @Transactional(rollbackFor = Exception.class)
 public class OrderServiceImpl implements OrderService {
 

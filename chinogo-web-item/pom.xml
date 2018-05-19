@@ -58,7 +58,7 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.chinogo</groupId>
-			<artifactId>chinogo-service-notify-api</artifactId>
+			<artifactId>chinogo-service-base-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

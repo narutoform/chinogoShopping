@@ -1,13 +1,16 @@
 package cn.chinogo.sso.controller;
 
+import cn.chinogo.base.service.NotifyUserService;
 import cn.chinogo.constant.Const;
-import cn.chinogo.notify.service.NotifyUserService;
 import cn.chinogo.pojo.ChinogoResult;
+import cn.chinogo.pojo.TbAdminUser;
 import cn.chinogo.pojo.TbUser;
 import cn.chinogo.sso.service.UserService;
 import cn.chinogo.utils.CookieUtils;
+import cn.chinogo.utils.DateUtils;
 import cn.chinogo.utils.FastJsonConvert;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 用户登录注册 Controller
@@ -30,10 +35,10 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
 
-    @Reference(version = Const.CHINOGO_SSO_VERSION)
+    @Reference(version = Const.CHINOGO_SSO_VERSION, timeout = 1000000)
     private UserService userService;
 
-    @Reference(version = Const.CHINOGO_NOTIFY_VERSION)
+    @Reference(version = Const.CHINOGO_NOTIFY_VERSION, timeout = 1000000)
     private NotifyUserService notifyUserService;
 
     @Value("${user_not_exist}")
@@ -54,6 +59,28 @@ public class UserController {
     @GetMapping(value = "/uuid")
     public String showRegister() {
         return UUID.randomUUID().toString();
+    }
+
+    @ApiOperation("获取用户列表")
+    @GetMapping(value = "/list")
+    public List<HashMap<String, Object>> userList(Page<TbUser> page) {
+        List<TbUser> tbUsers = userService.userList(page);
+        List<HashMap<String, Object>> collect = tbUsers.parallelStream().map(r -> {
+            HashMap<String, Object> o = new HashMap<>(4);
+            o.put("username", r.getUsername());
+            o.put("created", DateUtils.formatDate(r.getCreated()));
+            o.put("phone", r.getPhone());
+            o.put("id", r.getId());
+            return o;
+        }).collect(Collectors.toList());
+        return collect;
+    }
+
+    @ApiOperation("获取用户数量")
+    @GetMapping(value = "/count")
+    public Object userCount() {
+        Integer i = userService.userCount();
+        return i;
     }
 
     /**
@@ -88,6 +115,22 @@ public class UserController {
         }
 
         return PASSWORD_ERROR;
+
+    }
+
+    /**
+     * 管理员用户登录
+     *
+     * @param user     POJO
+     * @return
+     */
+    @ApiOperation("管理员用户登录")
+    @PostMapping(value = "/admin/login")
+    public Object managerLogin(@RequestBody TbAdminUser user) {
+
+        ChinogoResult result = userService.managerLogin(user);
+
+        return result;
 
     }
 

@@ -13,8 +13,6 @@
         <module>chinogo-common-mapper</module>
         <module>chinogo-common-pojo</module>
         <module>chinogo-common-config</module>
-        <module>chinogo-service-address-api</module>
-        <module>chinogo-service-address</module>
         <module>chinogo-service-redis-api</module>
         <module>chinogo-service-redis</module>
         <module>chinogo-service-content-api</module>
@@ -29,19 +27,15 @@
         <module>chinogo-service-sso-api</module>
         <module>chinogo-service-sso</module>
         <module>chinogo-web-sso</module>
-        <module>chinogo-service-notify-api</module>
-        <module>chinogo-service-notify</module>
         <module>chinogo-service-cart-api</module>
         <module>chinogo-service-cart</module>
         <module>chinogo-web-cart</module>
-        <module>chinogo-service-category-api</module>
-        <module>chinogo-service-category</module>
-        <module>chinogo-web-category</module>
         <module>chinogo-service-order-api</module>
         <module>chinogo-service-order</module>
         <module>chinogo-web-order</module>
-        <module>chinogo-web-address</module>
-        <module>chinogo-web-upload</module>
+        <module>chinogo-web-base</module>
+        <module>chinogo-service-base</module>
+        <module>chinogo-service-base-api</module>
         <module>spring-boot-starter-druid</module>
         <module>spring-boot-starter-dubbox</module>
         <module>spring-boot-starter-redis</module>

@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -26,7 +25,7 @@ import java.util.List;
  *
  * @author chinotan
  */
-@Service(version = Const.CHINOGO_CONTENT_VERSION)
+@Service(version = Const.CHINOGO_CONTENT_VERSION, timeout = 1000000)
 @Transactional(rollbackFor = Exception.class)
 public class ContentServiceImpl implements ContentService {
 
@@ -126,5 +125,18 @@ public class ContentServiceImpl implements ContentService {
         Integer integer = contentMapper.updateById(content);
         
         return integer;
+    }
+
+    /**
+     * 前端显示内容
+     *
+     * @return
+     */
+    @Override
+    public List<TbContent> showContent(Long categoryId) {
+        Wrapper<TbContent> wrapper = new EntityWrapper<>();
+        wrapper.eq("category_id", categoryId);
+        List<TbContent> tbContents = contentMapper.selectList(wrapper);
+        return tbContents;
     }
 }

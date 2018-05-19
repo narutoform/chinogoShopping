@@ -29,7 +29,7 @@ public class AuthImagesController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthImagesController.class);
 
-    @Reference(version = Const.CHINOGO_REDIS_VERSION)
+    @Reference(version = Const.CHINOGO_REDIS_VERSION, timeout = 1000000)
     private JedisClient jedisClient;
 
     @Value("${redisKey.prefix.verifycode}")

@@ -31,6 +31,15 @@ public class FastdfsStorageService implements StorageService, InitializingBean {
 	@Value("${storage.fastdfs.tracker_server}")
 	private String trackerServer;
 
+	@Value("${storage.fastdfs.connect_timeout}")
+	private String connectTimeout;
+
+	@Value("${storage.fastdfs.network_timeout}")
+    private String networkTimeout;
+
+    @Value("${storage.fastdfs.charset}")
+    private String charset;
+
 	@Override
 	public String upload(byte[] data, String extName) {
 		TrackerServer trackerServer = null;
@@ -115,6 +124,9 @@ public class FastdfsStorageService implements StorageService, InitializingBean {
 		File confFile = File.createTempFile("fastdfs", ".conf");
 		PrintWriter confWriter = new PrintWriter(new FileWriter(confFile));
 		confWriter.println("tracker_server=" + trackerServer);
+		confWriter.println("connect_timeout=" + connectTimeout);
+		confWriter.println("networkTimeout=" + networkTimeout);
+		confWriter.println("charset=" + charset);
 		confWriter.close();
 		ClientGlobal.init(confFile.getAbsolutePath());
 		confFile.delete();

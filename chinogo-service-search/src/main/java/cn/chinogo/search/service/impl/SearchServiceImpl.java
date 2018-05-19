@@ -2,9 +2,7 @@ package cn.chinogo.search.service.impl;
 
 import cn.chinogo.constant.Const;
 import cn.chinogo.mapper.TbItemMapper;
-import cn.chinogo.pojo.ChinogoResult;
-import cn.chinogo.pojo.SearchItem;
-import cn.chinogo.pojo.SearchResult;
+import cn.chinogo.pojo.*;
 import cn.chinogo.search.service.SearchService;
 import com.alibaba.dubbo.config.annotation.Service;
 import org.apache.commons.lang.StringUtils;
@@ -37,7 +35,7 @@ import java.util.Set;
  *
  * @author chinotan
  */
-@Service(version = Const.CHINOGO_SEARCH_VERSION, timeout = 100000)
+@Service(version = Const.CHINOGO_SEARCH_VERSION, timeout = 1000000)
 public class SearchServiceImpl implements SearchService {
 
     private static Logger logger = Logger.getLogger(SearchServiceImpl.class);
@@ -211,6 +209,38 @@ public class SearchServiceImpl implements SearchService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return ChinogoResult.ok();
+    }
+
+    @Override
+    public ChinogoResult addItem(Long id) throws Exception {
+        BulkRequestBuilder bulk = transportClient.prepareBulk();
+
+        XContentBuilder builder = null;
+
+        SearchItem item = itemMapper.getItemListWithDescAndCidById(id);
+
+        try {
+            builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("image", item.getImage())
+                    .field("price", item.getPrice())
+                    .field("sell_point", item.getSellPoint())
+                    .field("title", item.getTitle())
+                    .field("colour", item.getColour())
+                    .field("size", item.getSize())
+                    .field("weight", item.getWeight().toString())
+                    .field("category_name", item.getCategoryName())
+                    .field("item_desc", item.getItemDesc())
+                    .endObject();
+
+            bulk.add(transportClient.prepareIndex(ITEMINDEX, ITEMTYPE, item.getId()).setSource(builder));
+        } catch (Exception e) {
+            return ChinogoResult.build(500, e.getMessage());
+        }
+
+        bulk.get();
 
         return ChinogoResult.ok();
     }

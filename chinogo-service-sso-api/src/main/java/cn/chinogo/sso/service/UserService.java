@@ -1,7 +1,12 @@
 package cn.chinogo.sso.service;
 
 import cn.chinogo.pojo.ChinogoResult;
+import cn.chinogo.pojo.TbAdminUser;
 import cn.chinogo.pojo.TbUser;
+import com.baomidou.mybatisplus.plugins.Page;
+
+import java.util.List;
+import java.util.Map;
 
 //import javax.ws.rs.*;
 
@@ -65,6 +70,13 @@ public interface UserService {
     //@POST
     //@Path("/login")
     ChinogoResult login(TbUser user);
+
+    /**
+     * 管理员用户登录
+     * @param user
+     * @return
+     */
+    ChinogoResult managerLogin(TbAdminUser user);
 
     //http://192.168.125.1:8515/user/token/fe5cb546aeb3ce1bf37abcb08a40493e
 
@@ -144,4 +156,16 @@ public interface UserService {
      * @return
      */
     ChinogoResult register(String regName, String pwd, String pwdRepeat, String phone, String mobileCode, String uuid, String authCode, String email);
+
+    /**
+     * 获取user列表
+     * @return
+     */
+    List<TbUser> userList(Page<TbUser> page);
+
+    /**
+     * 获取用户数量
+     * @return
+     */
+    Integer userCount();
 }
