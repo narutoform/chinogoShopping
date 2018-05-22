@@ -2,6 +2,7 @@ package cn.chinogo.base.service;
 
 import cn.chinogo.pojo.TbUserAddr;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,5 +49,11 @@ public interface AddressService {
      * @return
      */
     int updateAddress(TbUserAddr addr, Long userId);
+
+    /**
+     * 设置默认地址
+     * @param addr
+     */
+    void setDefaultAddress(TbUserAddr addr);
     
 }

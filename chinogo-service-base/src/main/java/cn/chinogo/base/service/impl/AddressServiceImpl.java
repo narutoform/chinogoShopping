@@ -65,7 +65,7 @@ public class AddressServiceImpl implements AddressService {
         addr.setCreated(date);
         addr.setUpdated(date);
 
-        setDefaultAddress(addr, Long.parseLong(addr.getUserId()), date);
+        setDefAddress(addr, Long.parseLong(addr.getUserId()), date);
         
         Integer insert = addrMapper.insert(addr);
 
@@ -96,14 +96,14 @@ public class AddressServiceImpl implements AddressService {
         Date date = new Date();
         addr.setUpdated(date);
 
-        setDefaultAddress(addr, userId, date);
+        setDefAddress(addr, userId, date);
         
         Integer integer = addrMapper.updateById(addr);
         
         return integer;
     }
-    
-    private void setDefaultAddress(TbUserAddr addr, Long userId, Date date) {
+
+    private void setDefAddress(TbUserAddr addr, Long userId, Date date) {
         if (addr.getIsDefault() == 1) {
             List<TbUserAddr> addressList = this.getAddressList(userId);
             for (TbUserAddr userAddr: addressList) {
@@ -114,5 +114,17 @@ public class AddressServiceImpl implements AddressService {
                 }
             }
         }
+    }
+    
+    @Override
+    public void setDefaultAddress(TbUserAddr addr) {
+        Wrapper<TbUserAddr> wrapper = new EntityWrapper<>();
+        wrapper.in("user_id", String.valueOf(addr.getUserId()));
+        TbUserAddr tbUserAddr = new TbUserAddr();
+        tbUserAddr.setUpdated(new Date());
+        tbUserAddr.setIsDefault(0);
+        addrMapper.update(tbUserAddr, wrapper);
+        addr.setIsDefault(1);
+        addrMapper.updateById(addr);
     }
 }

@@ -168,4 +168,11 @@ public interface UserService {
      * @return
      */
     Integer userCount();
+
+    /**
+     * 插入用户头像
+     * @param user
+     * @return
+     */
+    Boolean updateUserAvatar(TbUser user);
 }

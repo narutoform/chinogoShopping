@@ -28,6 +28,8 @@ redisKey:
   prefix:
     # 验证码Redis前缀
     verifycode: 'VERIFYCODE:'
+    # 用户登录信息前缀
+    user_session: 'USER_SESSION:'
 
 # 密码错误
 password_error: '{"status": -1, "err":"密码错误"}'

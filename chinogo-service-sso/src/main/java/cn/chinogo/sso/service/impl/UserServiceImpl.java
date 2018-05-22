@@ -538,4 +538,17 @@ public class UserServiceImpl implements UserService {
         Integer integer = userMapper.selectCount(wrapper);
         return integer;
     }
+
+    /**
+     * 插入用户头像
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public Boolean updateUserAvatar(TbUser user) {
+        Integer u = userMapper.updateById(user);
+        
+        return u > 0;
+    }
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +144,28 @@ public class AddressController {
             map.put("status", "-1");
             map.put("msg", "failed");
         }
+
+        return map;
+    }
+
+    @ApiOperation("设置用户默认地址")
+    @PostMapping(value = "/defaultAddr")
+    public Object setDefaultAddress(@RequestBody TbUserAddr addr, @CookieValue(Const.TOKEN_LOGIN) String token) {
+        TbUser user = getUser(token);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", "");
+
+        if (user == null) {
+            map.put("status", "-2");
+            map.put("msg", "failed");
+            return map;
+        }
+
+        addressService.setDefaultAddress(addr);
+
+        map.put("status", "0");
+        map.put("msg", "suc");
 
         return map;
     }

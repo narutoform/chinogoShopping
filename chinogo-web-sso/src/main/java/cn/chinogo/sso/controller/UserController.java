@@ -5,6 +5,7 @@ import cn.chinogo.constant.Const;
 import cn.chinogo.pojo.ChinogoResult;
 import cn.chinogo.pojo.TbAdminUser;
 import cn.chinogo.pojo.TbUser;
+import cn.chinogo.redis.service.JedisClient;
 import cn.chinogo.sso.service.UserService;
 import cn.chinogo.utils.CookieUtils;
 import cn.chinogo.utils.DateUtils;
@@ -14,6 +15,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +44,9 @@ public class UserController {
     @Reference(version = Const.CHINOGO_NOTIFY_VERSION, timeout = 1000000)
     private NotifyUserService notifyUserService;
 
+    @Reference(version = Const.CHINOGO_REDIS_VERSION, timeout = 1000000)
+    private JedisClient jedisClient;
+
     @Value("${user_not_exist}")
     private String USER_NOT_EXIST;
 
@@ -49,6 +55,14 @@ public class UserController {
 
     @Value("${portal_path}")
     private String PORTAL_PATH;
+
+    @Value("${redisKey.prefix.user_session}")
+    private String USER_SESSION;
+
+    @Value("${redisKey.expire_time}")
+    private Integer EXPIRE_TIME;
+    
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     /**
      * 获取uuid
@@ -81,6 +95,43 @@ public class UserController {
     public Object userCount() {
         Integer i = userService.userCount();
         return i;
+    }
+
+    @ApiOperation("上传用户头像")
+    @PostMapping(value = "/upload")
+    public Object userUpload(@RequestBody String uploadFile, @CookieValue(Const.TOKEN_LOGIN) String token) {
+        TbUser user = getUser(token);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", "");
+
+        if (user == null) {
+            map.put("status", "-2");
+            map.put("msg", "failed");
+            return map;
+        }
+
+        Map res = FastJsonConvert.convertJSONToObject(uploadFile, Map.class);
+        String uploadFile1 = (String) res.get("uploadFile");
+        user.setAvatar(uploadFile1);
+        user.setUsername(null);
+        Boolean aBoolean = userService.updateUserAvatar(user);
+        
+        // redis中更新图片
+        String key = USER_SESSION + token;
+        jedisClient.set(key, FastJsonConvert.convertObjectToJSON(user));
+        jedisClient.expire(key, EXPIRE_TIME * 4);
+
+        if (!aBoolean) {
+            map.put("status", "-2");
+            map.put("msg", "failed");
+            return map;
+        } else {
+            map.put("status", "1");
+            map.put("msg", "suc");
+            map.put("path", uploadFile1);
+            return map;
+        }
     }
 
     /**
@@ -253,4 +304,27 @@ public class UserController {
         return map;
     }
 
+    /**
+     * 获取当前的user
+     * @param token
+     * @return
+     */
+    private TbUser getUser(String token) {
+        TbUser user = null;
+        String userJson = null;
+
+        if (StringUtils.isNoneEmpty(token)) {
+            try {
+                userJson = jedisClient.get(USER_SESSION + token);
+            } catch (Exception e) {
+                logger.error("Redis 错误", e);
+            }
+
+            if (StringUtils.isNoneEmpty(userJson)) {
+                user = FastJsonConvert.convertJSONToObject(userJson, TbUser.class);
+            }
+        }
+
+        return user;
+    }
 }
