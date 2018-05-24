@@ -3,6 +3,7 @@ package cn.chinogo.pojo;
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
@@ -14,26 +15,17 @@ public class SearchItem implements Serializable {
 
     private String id;
     private String image;
-    private Long price;
+    private BigDecimal price;
     private String sellPoint;
     private String title;
     private String colour;
     private String size;
-    private String weight;
+    private BigDecimal weight;
     private String categoryName;
     private String itemDesc;
-    @Setter(value = AccessLevel.PRIVATE)
-    private String priceView;
 
-    public String getPriceView() {
-        DecimalFormat df1 = new DecimalFormat("#.00");
-        df1.setGroupingUsed(false);
-        String format = df1.format(price / 100.00);
-        return format;
-    }
-
-    public SearchItem(String id, String image, Long price, String sellPoint, String title, String colour, 
-                      String weight, String size) {
+    public SearchItem(String id, String image, BigDecimal price, String sellPoint, String title, String colour,
+                      BigDecimal weight, String size) {
         this.id = id;
         this.image = image;
         this.price = price;

@@ -378,6 +378,9 @@ public class ItemServiceImpl implements ItemService {
         searchItem.setTitle(item.getTitle());
         searchItem.setSellPoint(item.getSellPoint());
         searchItem.setPrice(item.getPrice());
+        searchItem.setColour(item.getColour());
+        searchItem.setWeight(item.getWeight());
+        searchItem.setSize(item.getSize());
         searchItem.setId(String.valueOf(id));
         try {
             searchService.updateItem(searchItem);

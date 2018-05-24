@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
@@ -48,12 +49,12 @@ public class TbOrderItem implements Serializable {
     /**
      * 商品单价
      */
-	private Long price;
+	private BigDecimal price;
     /**
      * 商品总金额
      */
 	@TableField("total_fee")
-	private Long totalFee;
+	private BigDecimal totalFee;
     /**
      * 商品图片地址
      */
@@ -62,12 +63,5 @@ public class TbOrderItem implements Serializable {
     /**
      * 总重量 单位/克
      */
-	private String weights;
-
-	public String getPriceView() {
-		DecimalFormat df1 = new DecimalFormat("#.00");
-		df1.setGroupingUsed(false);
-		String format = df1.format(price / 100.00);
-		return format;
-	}
+	private BigDecimal weights;
 }

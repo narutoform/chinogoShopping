@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         //设置地址id
         order.setAddrId(addrId);
         //设置邮费
-        order.setPostFee(Integer.parseInt(POSTFEE));
+        order.setPostFee(new BigDecimal(POSTFEE));
         //设置状态
         order.setStatus(Const.NON_PAYMENT);
         //设置没有评价
@@ -81,9 +82,9 @@ public class OrderServiceImpl implements OrderService {
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
 
-        Long payment = 0L;
+        BigDecimal payment = BigDecimal.ZERO;
 
-        Integer weight = 0;
+        BigDecimal weight = BigDecimal.ZERO;
 
         List<TbCart> cartList = cartService.getCartItemList(user.getId().toString());
 
@@ -102,15 +103,15 @@ public class OrderServiceImpl implements OrderService {
                 orderItem.setNum(tbCart.getProductNum());
                 orderItem.setPicPath(item.getImage().split(",")[0]);
                 orderItem.setPrice(item.getPrice());
-                orderItem.setTotalFee(item.getPrice());
-                orderItem.setWeights(item.getWeight().toString());
+                orderItem.setTotalFee(item.getPrice().multiply(new BigDecimal(tbCart.getProductNum())));
+                orderItem.setWeights(item.getWeight());
                 // 记录日志
                 orderItemMapper.insert(orderItem);
 
                 logger.info("保存订单项,订单:" + orderItem.toString());
 
-                payment += item.getPrice();
-                weight += item.getWeight();
+                payment = payment.add(orderItem.getTotalFee());
+                weight = weight.add(item.getWeight());
 
                 // 移除购物车选中商品
                 if (cartList != null && cartList.size() > 0) {
@@ -128,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //设置总金额
-        order.setPayment(payment + Long.parseLong(POSTFEE) + "");
+        order.setPayment(payment.add(new BigDecimal(POSTFEE)));
         //设置总重
         order.setTotalWeight(weight.toString());
         // 保存订单

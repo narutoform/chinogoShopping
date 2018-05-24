@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.Date;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -26,7 +25,7 @@ public class TbCart implements Serializable{
     private static final long serialVersionUID = 1L;
 
 	private String productId;
-	private Long productPrice;
+	private BigDecimal productPrice;
 	private String productName;
 	private String productImg;
 	/**
@@ -35,13 +34,6 @@ public class TbCart implements Serializable{
 	private String checked;
 	private String colour;
 	private String size;
-	private Integer weight;
+	private BigDecimal weight;
 	private Integer productNum;
-
-	public String getPriceView() {
-		DecimalFormat df1 = new DecimalFormat("#.00");
-		df1.setGroupingUsed(false);
-		String format = df1.format(productPrice / 100.00);
-		return format;
-	}
 }

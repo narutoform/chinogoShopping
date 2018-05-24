@@ -45,21 +45,13 @@ public class PayController {
             return map.put("result", "订单错误，请重新下订单");
         }
 
-        String pay = orderService.pay(out_trade_no, getPriceView(Long.parseLong(order.getPayment())), subject, body);
+        String pay = orderService.pay(out_trade_no, order.getPayment().toString(), subject, body);
 
         map.put("result", pay);
         map.put("status", 0);
 
         return map;
     }
-
-    private String getPriceView(Long price) {
-        DecimalFormat df1 = new DecimalFormat("#.00");
-        df1.setGroupingUsed(false);
-        String format = df1.format(price / 100.00);
-        return format;
-    }
-
 }
 
 

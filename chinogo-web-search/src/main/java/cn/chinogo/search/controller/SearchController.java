@@ -66,29 +66,29 @@ public class SearchController {
         return chinogoResult;
     }
 
-    @ApiOperation("对某个item进行更新")
-    @PutMapping("/item")
-    public Object updateItem(@RequestBody SearchItem item) {
-        ChinogoResult chinogoResult = null;
-        try {
-            chinogoResult = searchService.updateItem(item);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return chinogoResult;
-    }
-
-    @ApiOperation("对某个item进行删除")
-    @DeleteMapping("/item/{id}")
-    public Object deleteItem(@PathVariable("id") String id) {
-        ChinogoResult chinogoResult = null;
-        try {
-            chinogoResult = searchService.deleteItem(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return chinogoResult;
-    }
+//    @ApiOperation("对某个item进行更新")
+//    @PutMapping("/item")
+//    public Object updateItem(@RequestBody SearchItem item) {
+//        ChinogoResult chinogoResult = null;
+//        try {
+//            chinogoResult = searchService.updateItem(Long.valueOf(item.getId()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return chinogoResult;
+//    }
+//
+//    @ApiOperation("对某个item进行删除")
+//    @DeleteMapping("/item/{id}")
+//    public Object deleteItem(@PathVariable("id") String id) {
+//        ChinogoResult chinogoResult = null;
+//        try {
+//            chinogoResult = searchService.deleteItem(id);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return chinogoResult;
+//    }
 }

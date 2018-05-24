@@ -60,7 +60,7 @@ redisKey:
   expire_time: 86400
   prefix:
     cart_info_profix: 'CART_INFO:'
-    PostFee: '1000' # 单位为分
+    PostFee: '10' # 单位为元
 server:
   port: 8518
 

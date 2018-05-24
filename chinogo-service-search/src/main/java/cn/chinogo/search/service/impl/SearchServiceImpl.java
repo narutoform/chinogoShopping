@@ -5,7 +5,7 @@ import cn.chinogo.mapper.TbItemMapper;
 import cn.chinogo.pojo.*;
 import cn.chinogo.search.service.SearchService;
 import com.alibaba.dubbo.config.annotation.Service;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class SearchServiceImpl implements SearchService {
         XContentBuilder builder = null;
 
         List<SearchItem> searchItemsList = itemMapper.getItemListWithDescAndCid();
-        
+
         for (SearchItem searchItem : searchItemsList) {
             try {
                 builder = XContentFactory.jsonBuilder()
@@ -74,7 +75,7 @@ public class SearchServiceImpl implements SearchService {
                         .field("category_name", searchItem.getCategoryName())
                         .field("item_desc", searchItem.getItemDesc())
                         .endObject();
-                
+
                 bulk.add(transportClient.prepareIndex(ITEMINDEX, ITEMTYPE, searchItem.getId()).setSource(builder));
             } catch (Exception e) {
                 return ChinogoResult.build(500, e.getMessage());
@@ -133,7 +134,7 @@ public class SearchServiceImpl implements SearchService {
             String title = "";
 
             Map<String, Object> source = hit.getSource();
-            
+
             if (highlightFields != null && !highlightFields.isEmpty()) {
                 Set<Map.Entry<String, HighlightField>> entries = highlightFields.entrySet();
                 for (Map.Entry<String, HighlightField> entry : entries) {
@@ -143,12 +144,12 @@ public class SearchServiceImpl implements SearchService {
 
             String id = hit.getId();
             String image = (String) source.get("image");
-            Long price = Long.parseLong(source.get("price").toString());
+            BigDecimal price = new BigDecimal(source.get("price").toString());
             sellPoint = (String) source.get("sell_point");
             title = (String) source.get("title");
             String colour = (String) source.get("colour");
             String size = (String) source.get("size");
-            String weight = (String) source.get("weight");
+            BigDecimal weight = new BigDecimal(String.valueOf(source.get("weight")));
 
             SearchItem searchItem = new SearchItem(id, image, price, sellPoint, title, colour, weight, size);
 
@@ -188,8 +189,17 @@ public class SearchServiceImpl implements SearchService {
             if (!StringUtils.isEmpty(item.getTitle())) {
                 xContentBuilder.field("title", item.getTitle());
             }
-            if (item.getPrice() != null && item.getPrice() != 0) {
+            if (item.getPrice() != null && (item.getPrice().compareTo(BigDecimal.ZERO)) > 0) {
                 xContentBuilder.field("price", item.getPrice());
+            }
+            if (item.getWeight() != null && (item.getWeight().compareTo(BigDecimal.ZERO)) > 0) {
+                xContentBuilder.field("weight", item.getWeight());
+            }
+            if (StringUtils.isNotBlank(item.getColour())) {
+                xContentBuilder.field("colour", item.getColour());
+            }
+            if (StringUtils.isNotBlank(item.getSize())) {
+                xContentBuilder.field("size", item.getSize());
             }
             xContentBuilder.endObject();
         } catch (IOException e) {

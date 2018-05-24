@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -45,7 +46,7 @@ public class TbOrder implements Serializable {
     /**
      * 实付金额。精确到2位小数;单位:元。如:200.07，表示:200元7分
      */
-	private String payment;
+	private BigDecimal payment;
     /**
      * 支付类型，1、货到付款，2、在线支付，3、微信支付，4、支付宝支付
      */
@@ -55,7 +56,7 @@ public class TbOrder implements Serializable {
      * 邮费。单位:元
      */
 	@TableField("post_fee")
-	private Integer postFee;
+	private BigDecimal postFee;
     /**
      * 状态：1、未付款，2、已付款，3、未发货，4、已发货，5、交易成功，6、交易关闭
      */

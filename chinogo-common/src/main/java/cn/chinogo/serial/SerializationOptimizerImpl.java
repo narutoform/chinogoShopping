@@ -5,7 +5,6 @@ import cn.chinogo.pojo.*;
 import com.alibaba.dubbo.common.serialize.support.SerializationOptimizer;
 import com.alibaba.fastjson.JSONObject;
 
-import javax.naming.directory.SearchResult;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
