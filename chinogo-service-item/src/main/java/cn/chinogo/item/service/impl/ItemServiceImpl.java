@@ -87,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         TbItem item = itemMapper.selectById(itemId);
-
+    
         try {
             jedisClient.set(key, FastJsonConvert.convertObjectToJSON(item));
 
@@ -353,6 +353,22 @@ public class ItemServiceImpl implements ItemService {
 
         String itemKey = ITEM_INFO_PROFIX + item.getId() + ITEM_INFO_BASE_SUFFIX;
         jedisClient.del(itemKey);
+
+        // 将es中数据删除
+        if (item.getStatus() != 1) {
+            try {
+                searchService.deleteItem(String.valueOf(item.getId()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (item.getStatus() == 1) {
+            // 插入到es中
+            try {
+                searchService.addItem(item.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
             
         return integer;
     }
